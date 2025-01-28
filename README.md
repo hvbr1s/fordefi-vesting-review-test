@@ -146,7 +146,7 @@ The `vesting_manager.py` script expects a Firestore collection named `vesting_co
 - `value`: The amount to vest, in normal "human-readable" units (e.g. 0.001 BNB)
 - `note`: A description of the vesting purpose
 - `cliff_days`: How many days to delay before the first vest
-- `vesting_time`: 24-hour format string for daily vesting time in CET (the script automatically accounts for UTC conversions)
+- `vesting_time`: 24-hour format string for daily vesting time in UTC
 - `destination`: The receiving address for the vest
 
 ### Secrets in Google Cloud Secret Manager
@@ -212,8 +212,7 @@ project_root/
    - If you need more tokens or chains, you must update these scripts accordingly
 
 5. Time Zones:
-   - The `vesting_time` is in CET
-   - The script converts to UTC under the hood to ensure consistent scheduling
+   - The `vesting_time` is in UTC
 
 6. Extended Ecosystems:
    - Currently, the code includes references to EVM tokens

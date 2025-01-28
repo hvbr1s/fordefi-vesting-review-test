@@ -79,7 +79,7 @@ def load_vesting_configs():
                 "destination":  token_info["destination"],
                 "value":        token_info["value"],
                 "note":         token_info["note"],
-                "cliff_days":   token_info["cliff_days"],
+                "cliff_days":   token_info["cliff_days"], # This should be UTC time
                 "vesting_time": token_info["vesting_time"]
             }
             configs.append(cfg)
@@ -195,7 +195,7 @@ def main():
 
     # 3) Schedule a daily refresh at 4pm CET (using schedule’s time syntax)
     #    This refresh uses the local system time zone.
-    schedule.every().day.at("10:00", "CET").do(refresh_vesting_schedules)
+    schedule.every().day.at("10:00", "UTC").do(refresh_vesting_schedules)
 
     # 4) Keep the script alive
     while True:
