@@ -194,7 +194,7 @@ def main():
     refresh_vesting_schedules()
 
     # 3) Schedule a daily refresh at your_time UTC which is the local system time zone.
-    schedule.every().day.at("14:00", "UTC").do(refresh_vesting_schedules)
+    schedule.every().day.at("13:00", "UTC").do(refresh_vesting_schedules)
 
     # 4) Keep the script alive
     while True:
