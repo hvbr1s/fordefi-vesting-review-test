@@ -110,8 +110,9 @@ def execute_vest_for_asset(cfg: dict):
                 fordefi_api_user_token=FORDEFI_API_USER_TOKEN,
                 api_signer_secret=API_SIGNER_CLIENT_KEYPAIR
             )
-        elif cfg["type"] in ["erc20", "spl_token"] and cfg["ecosystem"] in ["evm", "sol"] and cfg["value"] != "0":
-            # Send ERC20 token (USDT, USDC, etc.)
+        elif ((cfg["type"] == "erc20" and cfg["ecosystem"] == "evm") or 
+              (cfg["type"] == "spl_token" and cfg["ecosystem"] == "sol")) and cfg["value"] != "0":
+            # Send ERC20 or SPL token (USDT, USDC, etc.)
             transfer_token_gcp(
                 chain=cfg["chain"],
                 token_ticker=cfg["asset"],
