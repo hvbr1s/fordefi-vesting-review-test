@@ -113,7 +113,6 @@ def transfer_token_gcp(chain, vault_id, destination, note, amount, token_ticker,
         )
     else:
         request_json = sol_tx_tokens(
-            evm_chain=chain,
             vault_id=vault_id,
             destination=destination,
             custom_note=note,
