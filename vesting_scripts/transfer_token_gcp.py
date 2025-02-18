@@ -51,8 +51,38 @@ def evm_tx_tokens(evm_chain, vault_id, destination, custom_note, value, token):
 
     return request_json
 
+def sol_tx_tokens(vault_id, destination, custom_note, value, token):
+
+    request_json = {
+        "signer_type": "api_signer",
+        "type": "solana_transaction",
+        "details": {
+            "type": "solana_transfer",
+            "to": destination,
+            "value": {
+                "type": "value",
+                "value": value
+            },
+            "asset_identifier": {
+                "type": "solana",
+                "details": {
+                    "type": "spl_token",
+                    "token": {
+                        "chain": "solana_mainnet",
+                        "base58_repr": token
+                    }
+                }
+            }
+        },
+        "note": custom_note,
+        "vault_id": vault_id
+    }
+
+
+    return request_json
+
 ### Core logic
-def transfer_token_gcp(chain, token_ticker, vault_id, destination, amount, note):
+def transfer_token_gcp(chain, vault_id, destination, note, amount, token_ticker, gcp_project_id, fordefi_api_user_token, api_signer_secret):
     """
     Execute an ERC20 token transfer using Fordefi API
     
@@ -68,26 +98,35 @@ def transfer_token_gcp(chain, token_ticker, vault_id, destination, amount, note)
         dict: Response from the Fordefi API
     """
     # Set config
-    GCP_PROJECT_ID = 'inspired-brand-447513-i8' ## CHANGE to your GCP project name
-    FORDEFI_API_USER_TOKEN = 'USER_API_TOKEN'
-    USER_API_TOKEN = access_secret(GCP_PROJECT_ID, FORDEFI_API_USER_TOKEN, 'latest')
+    USER_API_TOKEN = access_secret(gcp_project_id, fordefi_api_user_token, 'latest')
     path = "/api/v1/transactions"
 
+    if chain == "evm":
     # Building transaction
-    request_json = evm_tx_tokens(
-        evm_chain=chain,
-        vault_id=vault_id,
-        destination=destination,
-        custom_note=note,
-        value=amount,
-        token=token_ticker
-    )
+        request_json = evm_tx_tokens(
+            evm_chain=chain,
+            vault_id=vault_id,
+            destination=destination,
+            custom_note=note,
+            value=amount,
+            token=token_ticker
+        )
+    else:
+        request_json = sol_tx_tokens(
+            evm_chain=chain,
+            vault_id=vault_id,
+            destination=destination,
+            custom_note=note,
+            value=amount,
+            token=token_ticker
+        )
+
     request_body = json.dumps(request_json)
     timestamp = datetime.datetime.now().strftime("%s")
     payload = f"{path}|{timestamp}|{request_body}"
 
     # Sign transaction with API Signer
-    signature = sign(payload=payload, project=GCP_PROJECT_ID)
+    signature = sign(payload=payload, project=gcp_project_id, api_signer_secret_name=api_signer_secret)
 
     # Push tx to Fordefi API
     resp_tx = push_tx(path, USER_API_TOKEN, signature, timestamp, request_body)
