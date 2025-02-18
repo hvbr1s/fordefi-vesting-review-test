@@ -24,5 +24,14 @@ EVM_TOKEN_CONFIGS = {
             "contract_address": "0x44971ABF0251958492FeE97dA3e5C5adA88B9185",
             "decimals": 18
         }
+    },
+    "solana":{
+        "sol":{
+            "decimals": 9
+        },
+        "kiki":{
+            "contract_address": "HhCLbkW6FwhriTkk81W8tYstsRCLUu6Y7Je1SQjVpump",
+            "decimals": 6
+        }
     }
 }

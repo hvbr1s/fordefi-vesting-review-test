@@ -7,6 +7,11 @@ from vesting_scripts.transfer_native_gcp import transfer_native_gcp
 from vesting_scripts.transfer_token_gcp import transfer_token_gcp
 from firebase_admin import firestore
 
+# SET CONFIG
+GCP_PROJECT_ID = 'inspired-brand-447513-i8' ## CHANGE to your GCP project name
+FORDEFI_API_USER_TOKEN = 'USER_API_TOKEN'
+API_SIGNER_CLIENT_KEYPAIR = 'PRIVATE_KEY_FILE'
+
 # -------------------------------------------------
 # UTILITY
 # This script lets you implement a vesting schedule for assets custodied in Fordefi Vaults 
@@ -79,8 +84,8 @@ def load_vesting_configs():
                 "destination":  token_info["destination"],
                 "value":        token_info["value"],
                 "note":         token_info["note"],
-                "cliff_days":   token_info["cliff_days"], # This should be UTC time
-                "vesting_time": token_info["vesting_time"]
+                "cliff_days":   token_info["cliff_days"], 
+                "vesting_time": token_info["vesting_time"] # This should be UTC time
             }
             configs.append(cfg)
 
@@ -100,9 +105,12 @@ def execute_vest_for_asset(cfg: dict):
                 vault_id=cfg["vault_id"],
                 destination=cfg["destination"],
                 value=cfg["value"],
-                note=cfg["note"]
+                note=cfg["note"],
+                gcp_project_id=GCP_PROJECT_ID,
+                fordefi_api_user_token=FORDEFI_API_USER_TOKEN,
+                api_signer_secret=API_SIGNER_CLIENT_KEYPAIR
             )
-        elif cfg["type"] == "erc20" and cfg["ecosystem"] == "evm" and cfg["value"] != "0":
+        elif cfg["type"] in ["erc20", "spl_token"] and cfg["ecosystem"] in ["evm", "sol"] and cfg["value"] != "0":
             # Send ERC20 token (USDT, USDC, etc.)
             transfer_token_gcp(
                 chain=cfg["chain"],
@@ -110,7 +118,10 @@ def execute_vest_for_asset(cfg: dict):
                 vault_id=cfg["vault_id"],
                 destination=cfg["destination"],
                 amount=cfg["value"],
-                note=cfg["note"]
+                note=cfg["note"],
+                gcp_project_id=GCP_PROJECT_ID,
+                fordefi_api_user_token=FORDEFI_API_USER_TOKEN,
+                api_signer_secret=API_SIGNER_CLIENT_KEYPAIR
             )
         elif cfg["value"] == "0":
             # If the vesting amount is zero, just inform

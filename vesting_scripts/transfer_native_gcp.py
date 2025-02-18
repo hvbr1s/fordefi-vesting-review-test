@@ -54,7 +54,7 @@ def evm_tx_native(evm_chain, native_asset, vault_id, destination, custom_note, v
     return request_json
 
 ### Core logic
-def transfer_native_gcp(chain, vault_id, destination, value, note):
+def transfer_native_gcp(chain, vault_id, destination, value, note, gcp_project_id, fordefi_api_user_token, api_signer_secret):
     """
     Execute a native token transfer (BNB/ETH) using Fordefi API
     
@@ -68,10 +68,8 @@ def transfer_native_gcp(chain, vault_id, destination, value, note):
     Returns:
         dict: Response from the Fordefi API
     """
-    # Set config
-    GCP_PROJECT_ID = 'inspired-brand-447513-i8' # CHANGE to your GCP project name
-    FORDEFI_API_USER_TOKEN = 'USER_API_TOKEN'
-    USER_API_TOKEN = access_secret(GCP_PROJECT_ID, FORDEFI_API_USER_TOKEN, 'latest')
+
+    USER_API_TOKEN = access_secret(gcp_project_id, fordefi_api_user_token, 'latest')
     path = "/api/v1/transactions"
 
     # Building transaction
@@ -87,7 +85,7 @@ def transfer_native_gcp(chain, vault_id, destination, value, note):
     payload = f"{path}|{timestamp}|{request_body}"
 
     # Sign transaction with API Signer
-    signature = sign(payload=payload, project=GCP_PROJECT_ID)
+    signature = sign(payload=payload, project=gcp_project_id, api_signer_secret_name=api_signer_secret)
 
     # Push tx to Fordefi API
     resp_tx = push_tx(path, USER_API_TOKEN, signature, timestamp, request_body)
