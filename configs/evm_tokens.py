@@ -1,4 +1,4 @@
-EVM_TOKEN_CONFIGS = {
+TOKEN_CONFIGS = {
     "bsc": {
         "bnb": {
             "decimals": 18
