@@ -3,7 +3,7 @@ import datetime
 from decimal import Decimal
 from signer.api_signer import sign
 from push_to_api.push_tx import push_tx
-from configs.evm_tokens import EVM_TOKEN_CONFIGS
+from configs.evm_tokens import TOKEN_CONFIGS
 from secret_manager.gcp_secret_manager import access_secret
 
 ### FUNCTIONS
@@ -16,10 +16,10 @@ def evm_tx_native(evm_chain, native_asset, vault_id, destination, custom_note, v
 
     sanitized_native_asset_name = native_asset.lower().strip()
 
-    if evm_chain not in EVM_TOKEN_CONFIGS:
+    if evm_chain not in TOKEN_CONFIGS:
         raise ValueError(f"'{evm_chain}' is not implemented yet!")
 
-    token_config = EVM_TOKEN_CONFIGS[evm_chain][sanitized_native_asset_name]
+    token_config = TOKEN_CONFIGS[evm_chain][sanitized_native_asset_name]
     decimals = token_config["decimals"]
     value = str(int(Decimal(value) * Decimal(10**decimals)))
 
