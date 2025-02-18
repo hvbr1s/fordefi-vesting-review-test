@@ -3,7 +3,7 @@ import datetime
 from decimal import Decimal
 from signer.api_signer import sign
 from push_to_api.push_tx import push_tx
-from configs.evm_tokens import EVM_TOKEN_CONFIGS
+from configs.evm_tokens import TOKEN_CONFIGS
 from secret_manager.gcp_secret_manager import access_secret
 
 ### FUNCTIONS
@@ -11,10 +11,10 @@ def evm_tx_tokens(evm_chain, vault_id, destination, custom_note, value, token):
 
     sanitized_token_name = token.lower().strip()
 
-    if evm_chain not in EVM_TOKEN_CONFIGS or sanitized_token_name not in EVM_TOKEN_CONFIGS[evm_chain]:
+    if evm_chain not in TOKEN_CONFIGS or sanitized_token_name not in TOKEN_CONFIGS[evm_chain]:
         raise ValueError(f"Token '{token}' is not supported for chain '{evm_chain}'")
     
-    token_config = EVM_TOKEN_CONFIGS[evm_chain][sanitized_token_name]
+    token_config = TOKEN_CONFIGS[evm_chain][sanitized_token_name]
     decimals = token_config["decimals"]
     contract_address = token_config["contract_address"]
     
@@ -51,7 +51,18 @@ def evm_tx_tokens(evm_chain, vault_id, destination, custom_note, value, token):
 
     return request_json
 
-def sol_tx_tokens(vault_id, destination, custom_note, value, token):
+def sol_tx_tokens(chain, vault_id, destination, custom_note, value, token):
+
+    sanitized_token_name = token.lower().strip()
+
+    if chain not in TOKEN_CONFIGS or sanitized_token_name not in TOKEN_CONFIGS[chain]:
+        raise ValueError(f"Token '{token}' is not supported for chain '{chain}'")
+    
+    token_config = TOKEN_CONFIGS[chain][sanitized_token_name]
+    decimals = token_config["decimals"]
+    contract_address = token_config["contract_address"]
+    
+    value = str(int(Decimal(value) * Decimal(10**decimals)))
 
     request_json = {
         "signer_type": "api_signer",
@@ -69,7 +80,7 @@ def sol_tx_tokens(vault_id, destination, custom_note, value, token):
                     "type": "spl_token",
                     "token": {
                         "chain": "solana_mainnet",
-                        "base58_repr": token
+                        "base58_repr": contract_address
                     }
                 }
             }
@@ -113,6 +124,7 @@ def transfer_token_gcp(chain, vault_id, destination, note, amount, token_ticker,
         )
     else:
         request_json = sol_tx_tokens(
+            chain=chain,
             vault_id=vault_id,
             destination=destination,
             custom_note=note,
