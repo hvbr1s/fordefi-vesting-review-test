@@ -130,7 +130,7 @@ def execute_vest_for_asset(cfg: dict):
         else:
             raise ValueError(f"Unsupported configuration: type={cfg['type']}, ecosystem={cfg['ecosystem']}")
 
-        print(f"✅ {cfg['asset']} vesting to {cfg["destination"]} completed successfully.")
+        print(f"✅ {cfg['asset']} vesting to {cfg['destination']} completed successfully.")
     except Exception as e:
         print(f"❌ Error during {cfg['asset']} vesting: {str(e)}")
 
