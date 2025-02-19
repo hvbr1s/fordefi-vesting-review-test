@@ -112,7 +112,7 @@ def transfer_token_gcp(chain, vault_id, destination, note, amount, token_ticker,
     USER_API_TOKEN = access_secret(gcp_project_id, fordefi_api_user_token, 'latest')
     path = "/api/v1/transactions"
 
-    if chain == "evm":
+    if chain in ["ethereum", "bsc"]:
     # Building transaction
         request_json = evm_tx_tokens(
             evm_chain=chain,
