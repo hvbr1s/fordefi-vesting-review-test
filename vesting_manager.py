@@ -130,7 +130,7 @@ def execute_vest_for_asset(cfg: dict):
         else:
             raise ValueError(f"Unsupported configuration: type={cfg['type']}, ecosystem={cfg['ecosystem']}")
 
-        print(f"✅ {cfg['asset']} vesting completed successfully.")
+        print(f"✅ {cfg['asset']} vesting to {cfg["destination"]} completed successfully.")
     except Exception as e:
         print(f"❌ Error during {cfg['asset']} vesting: {str(e)}")
 
@@ -158,9 +158,7 @@ def schedule_vesting_for_asset(cfg: dict, tag: str = "vesting"):
     # Applies the vest_hour:vest_minute
     first_vest_local = first_vest_local.replace(
         hour=vest_hour,
-        minute=vest_minute,
-        second=0,
-        microsecond=0
+        minute=vest_minute
     )
 
     # If we've passed that local time for the day, push to tomorrow
@@ -178,7 +176,7 @@ def schedule_vesting_for_asset(cfg: dict, tag: str = "vesting"):
     # Schedule the job every day at the local time "CET"
     schedule.every().day.at(at_string).do(daily_vest_job).tag(tag)
 
-    print(f"⏰ {cfg['asset']} (Vault ID: {cfg['vault_id']}) first daily vest scheduled for {first_vest_local} local time.")
+    print(f"⏰ {cfg['asset']} (Vault ID: {cfg['vault_id']}) first daily vest to {cfg['destination']} scheduled for {first_vest_local} local time.")
 
 
 def refresh_vesting_schedules():
