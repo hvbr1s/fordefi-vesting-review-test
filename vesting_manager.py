@@ -203,8 +203,8 @@ def main():
     # 2) Initial refresh so we have tasks immediately
     refresh_vesting_schedules()
 
-    # 3) Schedule a daily refresh at your_time UTC which is the local system time zone.
-    schedule.every().day.at("13:00", "UTC").do(refresh_vesting_schedules)
+    # 3) Schedule an early daily refresh UTC time so vesting added the previous day are picked up and started the same day.
+    schedule.every().day.at("00:10", "UTC").do(refresh_vesting_schedules)
 
     # 4) Keep the script alive
     while True:
