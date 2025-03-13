@@ -25,6 +25,16 @@ TOKEN_CONFIGS = {
             "decimals": 18
         }
     },
+    "polygon": {
+        "pol": {
+            "decimals": 18
+        },
+        "furi": {
+            "contract_address": "0x5742fe477b2afed92c25d092418bac06cd076cea",
+            "decimals": 18
+        }
+    },
+
     "solana":{
         "sol":{
             "decimals": 9

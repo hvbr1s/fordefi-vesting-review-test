@@ -6,11 +6,14 @@ from datetime import datetime, timedelta
 from vesting_scripts.transfer_native_gcp import transfer_native_gcp
 from vesting_scripts.transfer_token_gcp import transfer_token_gcp
 from firebase_admin import firestore
+from dotenv import load_dotenv
+import os
 
 # SET CONFIG
-GCP_PROJECT_ID = 'inspired-brand-447513-i8' ## CHANGE to your GCP project name
-FORDEFI_API_USER_TOKEN = 'USER_API_TOKEN'
-API_SIGNER_CLIENT_KEYPAIR = 'PRIVATE_KEY_FILE'
+load_dotenv()
+GCP_PROJECT_ID = os.getenv('GCP_PROJECT_ID')
+FORDEFI_API_USER_TOKEN = os.getenv('FORDEFI_API_USER_TOKEN')
+API_SIGNER_CLIENT_KEYPAIR = os.getenv('API_SIGNER_CLIENT_KEYPAIR')
 
 # -------------------------------------------------
 # UTILITY
