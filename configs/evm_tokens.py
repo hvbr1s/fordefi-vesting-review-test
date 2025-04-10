@@ -34,7 +34,12 @@ TOKEN_CONFIGS = {
             "decimals": 18
         }
     },
-
+    "arbitrum": {
+        "kima": {
+            "contract_address": "0x94fCD9c18f99538C0f7C61c5500cA79F0D5C4dab",
+            "decimals": 18
+        }
+    },
     "solana":{
         "sol":{
             "decimals": 9
